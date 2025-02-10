@@ -33,22 +33,20 @@ class ProfilePhotoController extends Controller
         $file = $request->file('profile_photo_path');
 
         if(!$file) {
-            debug($request->file('profile_photo_path'));
             return back()->with('error', 'File not uploaded');
         }
-        $bucketId = '679fa2e300062e7146b9';
 
         $fileId = ID::unique();
 
          $storage->createFile(
-            bucketId: $bucketId,
+           bucketId: env('APPWRITE_STORAGE_BUCKET_ID'),
             fileId: $fileId,
             file: InputFile::withPath($file->getPathname())
         );
 
         $fileUrl = sprintf(
             'https://cloud.appwrite.io/v1/storage/buckets/%s/files/%s/view?project=%s',
-            $bucketId,
+          env('APPWRITE_STORAGE_BUCKET_ID'),
             $fileId,
             env('APPWRITE_PROJECT_ID')
         );

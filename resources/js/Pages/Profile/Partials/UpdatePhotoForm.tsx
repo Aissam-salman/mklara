@@ -38,6 +38,8 @@ export const UpdatePhotoForm = ({className = ''}: { className: string }) => {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
+      console.log(data.profile_photo_path);
+
         if (!data.profile_photo_path) {
             alert("Please select a profile photo.");
             return;
