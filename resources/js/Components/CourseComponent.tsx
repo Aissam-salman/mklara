@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/Components/ui/dialog";
-import {PointerIcon} from "lucide-react";
+import {Ellipsis, PointerIcon} from "lucide-react";
 
 interface CourseComponentProps {
   course: Course;
@@ -33,6 +33,7 @@ export default function CourseComponent({course}: CourseComponentProps) {
 
   const [isOpen, setIsOpen] = React.useState(false);
 
+  // @ts-ignore
   const submit = (e) => {
     e.preventDefault();
     console.log(data)
@@ -53,7 +54,7 @@ export default function CourseComponent({course}: CourseComponentProps) {
   }
 
   return (
-    <Card className="p-6 flex flex-wrap gap-6 w-full">
+    <Card className="p-6 flex flex-wrap gap-6 w-full relative">
       <img className={"rounded-sm h-36"} src={course.image} alt=""/>
       <div className="flex-1">
         <div className="flex justify-between items-center">
@@ -63,12 +64,12 @@ export default function CourseComponent({course}: CourseComponentProps) {
           </div>
         </div>
         <p className="mt-4 text-lg text-gray-900">{course.description}</p>
-        <div className="p-6 flex flex-wrap gap-6 w-full">
+        <div className="absolute bottom-0 right-3">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <PointerIcon/>
+              <Ellipsis />
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent side={"left"} >
               <DropdownMenuItem onClick={() => setIsOpen(true)}>
                 Edit
               </DropdownMenuItem>
