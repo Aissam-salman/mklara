@@ -2,21 +2,12 @@ import {Course} from "@/types";
 import {Card} from "./ui/card";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/Components/ui/dropdown-menu";
 import {useForm} from "@inertiajs/react";
-import {useState} from "react";
-import InputError from "@/Components/InputError";
-import PrimaryButton from "@/Components/PrimaryButton";
 import * as React from "react";
+import {FormEventHandler, useState} from "react";
+import InputError from "@/Components/InputError";
 import {Button} from "@/Components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/Components/ui/dialog";
-import {Ellipsis, PointerIcon} from "lucide-react";
+import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle,} from "@/Components/ui/dialog";
+import {Ellipsis} from "lucide-react";
 
 interface CourseComponentProps {
   course: Course;
@@ -24,7 +15,7 @@ interface CourseComponentProps {
 
 export default function CourseComponent({course}: CourseComponentProps) {
   const [previewImage, setPreviewImage] = useState<string>(course.image)
-  const {data, setData, patch, clearErrors, reset, errors} = useForm({
+  const {data, setData, post, clearErrors, reset, errors} = useForm({
     title: course.title,
     description: course.description,
     image: course.image,
@@ -34,10 +25,14 @@ export default function CourseComponent({course}: CourseComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   // @ts-ignore
-  const submit = (e) => {
+  const submit: FormEventHandler = (e) => {
     e.preventDefault();
     console.log(data)
-    patch(route('courses.update', course.id));
+    post(route('courses.update', course.id), {
+        forceFormData: true,
+        onSuccess: () => setIsOpen(false)
+      }
+    );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +98,7 @@ export default function CourseComponent({course}: CourseComponentProps) {
                     onChange={e => setData('description', e.target.value)}
                   ></textarea>
                   <InputError message={errors.description} className="mt-2"/>
-                  <input placeholder={"Illustration"} type="file" onChange={(e) => handleImageChange(e)}/>
+                  <input name={"image"} placeholder={"Illustration"} type="file" onChange={handleImageChange}/>
                   <img src={previewImage} className={previewImage ? "w-full h-52" : "hidden"} alt={''}/>
                   <InputError message={errors.image} className="mt-2"/>
                   <Button type={"submit"} className="mt-4">Save</Button>

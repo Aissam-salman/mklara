@@ -9,7 +9,6 @@ use Appwrite\InputFile;
 use Appwrite\Services\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use function Psy\debug;
 
 class ProfilePhotoController extends Controller
 {
@@ -18,7 +17,6 @@ class ProfilePhotoController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-
         $request->validate([
             'profile_photo_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);

@@ -1,4 +1,4 @@
-import { Config } from 'ziggy-js';
+import {Config} from 'ziggy-js';
 
 export interface User {
     id: number;
@@ -14,7 +14,7 @@ export interface Course {
   title: string;
   description: string;
   image: string;
-  order: number;
+  order: number | string;
 }
 
 export type PageProps<

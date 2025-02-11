@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Course;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class CoursePolicy
 {
@@ -37,7 +36,7 @@ class CoursePolicy
      */
     public function update(User $user, Course $course): bool
     {
-        return $user->role === 'admin';
+      return $user->getAttribute('role') === 'admin';
     }
 
     /**

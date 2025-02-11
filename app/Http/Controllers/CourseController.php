@@ -11,6 +11,9 @@ use Appwrite\Services\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,7 +24,7 @@ class CourseController extends Controller
    */
   public function index(): Response
   {
-    $courses = Course::all();
+    $courses = Course::orderBy('order', 'asc')->get();
 
     return Inertia::render('Courses/Index', [
       'courses' => $courses
@@ -109,17 +112,47 @@ class CourseController extends Controller
 
   /**
    * Update the specified resource in storage.
+   * @throws ValidationException
    */
   public function update(Request $request, Course $course): RedirectResponse
   {
     Gate::authorize('update', $course);
 
-    $validated = $request->validate([
+
+    $validator = Validator::make($request->all(), [
       'title' => 'string',
       'description' => 'string',
-      'image' => 'nullable',
+      'image' => [
+        'nullable',
+        function ($attribute, $value, $fail) use ($request) {
+          if ($request->hasFile('image')) {
+            // Validation pour un fichier
+            $validator = Validator::make(
+              ['image' => $request->file('image')],
+              ['image' => 'file|mimes:jpeg,png,jpg,gif,svg,webp']
+            );
+
+            if ($validator->fails()) {
+              $fail($validator->errors()->first('image'));
+            }
+          } else if ($value) {
+            // Validation pour une URL
+            $validator = Validator::make(
+              ['image' => $value],
+              ['image' => 'string|url']
+            );
+
+            if ($validator->fails()) {
+              $fail($validator->errors()->first('image'));
+            }
+          }
+        }
+      ],
       'order' => 'integer',
     ]);
+
+    $validated = $validator->validate();
+
 
     $dataToUpdate = [];
 
@@ -129,43 +162,67 @@ class CourseController extends Controller
     if ($request->has('description') && $request->description !== $course->description) {
       $dataToUpdate['description'] = $validated['description'];
     }
-    if ($request->has('order') && $request->order !== $course->order) {
+    if ($request->has('order') && (int)$request->order !== $course->order) {
       $dataToUpdate['order'] = $validated['order'];
     }
 
     if ($request->hasFile('image')) {
-      $client = new Client();
-      $client->setEndpoint(env('APPWRITE_ENDPOINT'))
-        ->setProject(env('APPWRITE_PROJECT_ID'))
-        ->setKey(env('APPWRITE_API_KEY'));
+      try {
+        $client = new Client();
+        $client->setEndpoint(env('APPWRITE_ENDPOINT'))
+          ->setProject(env('APPWRITE_PROJECT_ID'))
+          ->setKey(env('APPWRITE_API_KEY'));
 
-      $storage = new Storage($client);
-      $file = $request->file('image');
-      $fileId = ID::unique();
+        $storage = new Storage($client);
 
-      $storage->createFile(
-        bucketId: env('APPWRITE_STORAGE_BUCKET_ID'),
-        fileId: $fileId,
-        file: InputFile::withPath($file->getPathname())
-      );
+        if ($course->image) {
+          $oldFileId = Str::before(Str::after($course->image, 'files/'), '/view');
+          try {
+            $storage->deleteFile(
+              bucketId: env('APPWRITE_STORAGE_BUCKET_ID'),
+              fileId: $oldFileId
+            );
+          } catch (\Exception $e) {
+            \Log::error('Erreur lors de la suppression de l\'ancienne image: ' . $e->getMessage());
+          }
+        }
 
-      $fileUrl = sprintf(
-        'https://cloud.appwrite.io/v1/storage/buckets/%s/files/%s/view?project=%s',
-        env('APPWRITE_STORAGE_BUCKET_ID'),
-        $fileId,
-        env('APPWRITE_PROJECT_ID')
-      );
+        $file = $request->file('image');
+        $fileId = ID::unique();
 
-      if ($fileUrl !== $course->image) {
+        $res = $storage->createFile(
+          bucketId: env('APPWRITE_STORAGE_BUCKET_ID'),
+          fileId: $fileId,
+          file: InputFile::withPath($file->getPathname())
+        );
+
+        $fileUrl = sprintf(
+          'https://cloud.appwrite.io/v1/storage/buckets/%s/files/%s/view?project=%s',
+          env('APPWRITE_STORAGE_BUCKET_ID'),
+          $fileId,
+          env('APPWRITE_PROJECT_ID')
+        );
+
         $dataToUpdate['image'] = $fileUrl;
+      } catch (\Exception $e) {
+        dd($e->getMessage());
+        return redirect()
+          ->route('courses.index')
+          ->with('error', 'Erreur lors de l\'upload de l\'image: ' . $e->getMessage());
       }
     }
 
-    if (!empty($dataToUpdate)) {
-      $course->update($dataToUpdate);
-    }
 
-    return redirect()->route('courses.index');
+    try {
+      $course->update($dataToUpdate);
+      return redirect()
+        ->route('courses.index')
+        ->with('success', 'Cours mis à jour avec succès');
+    } catch (\Exception $e) {
+      return redirect()
+        ->route('courses.index')
+        ->with('error', 'Erreur lors de la mise à jour du cours: ' . $e->getMessage());
+    }
   }
 
 

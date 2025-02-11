@@ -2,11 +2,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import {Head, useForm} from "@inertiajs/react";
 import InputError from "@/Components/InputError";
 import PrimaryButton from "@/Components/PrimaryButton";
-import {Input} from "@/Components/ui/input";
-import {FormEventHandler, useState} from "react";
 import * as React from "react";
-import { Course } from "@/types";
-import CourseComponent from "@/Components/CourseComponent";
+import {FormEventHandler, useState} from "react";
 
 interface FormData {
   title: string;
