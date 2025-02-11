@@ -58,8 +58,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
         icon: Bot,
         items: [
           {
-            title: "Genesis",
-            url: "#",
+            title: "Les cours",
+            url: route('courses.index'),
           },
           {
             title: "Explorer",
@@ -71,7 +71,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: "Ajouter un cours",
-            url: route('courses.index'),
+            url: route('courses.create'),
           }
         ],
       },

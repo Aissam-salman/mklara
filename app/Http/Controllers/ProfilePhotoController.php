@@ -20,7 +20,7 @@ class ProfilePhotoController extends Controller
     {
 
         $request->validate([
-            'profile_photo_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'profile_photo_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
 
         $client = new Client();

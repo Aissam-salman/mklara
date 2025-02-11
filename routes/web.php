@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('courses', CourseController::class)
-  ->only(['index', 'store'])
+  ->only(['index', 'store', 'create', 'update'])
   ->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';
