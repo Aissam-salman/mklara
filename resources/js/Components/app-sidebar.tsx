@@ -7,8 +7,6 @@ import {NavUser} from "@/Components/nav-user"
 import {Team} from "@/Components/team"
 import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@/Components/ui/sidebar"
 import {usePage} from "@inertiajs/react";
-import {Role} from "@/types";
-
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 
@@ -50,10 +48,9 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
             title: "Recemment consultée",
             url: "#",
           },
-          user.role === Role.Admin ? {
-            title: "Ajouter un cours",
-            url: route('courses.create'),
-          } : null,
+          ...(user.role === "admin"
+            ? [{title: "Ajouter un cours", url: route("courses.create")}]
+            : []),
         ],
       },
     ],

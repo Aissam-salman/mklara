@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Section;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SectionController extends Controller
@@ -12,7 +13,6 @@ class SectionController extends Controller
    */
   public function index()
   {
-    //
   }
 
   /**
@@ -26,9 +26,17 @@ class SectionController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(Request $request): RedirectResponse
   {
-    //
+    $validated = $request->validate([
+      'title' => 'required|string',
+      'order' => 'required|integer',
+      'course_id' => 'required|integer',
+    ]);
+
+    Section::create($validated);
+
+    return redirect()->route('courses.show', $validated['course_id']);
   }
 
   /**

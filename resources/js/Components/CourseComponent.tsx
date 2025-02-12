@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/Components/ui/dropdown-menu";
-import {router, useForm, usePage} from "@inertiajs/react";
+import {Link, router, useForm, usePage} from "@inertiajs/react";
 import * as React from "react";
 import {FormEventHandler, useState} from "react";
 import InputError from "@/Components/InputError";
@@ -62,7 +62,10 @@ export default function CourseComponent({course}: CourseComponentProps) {
   }
 
   return (
+    <Link href={route('courses.show', course.id)} className={"cursor-pointer"}>
+
     <Card className="p-6 flex flex-wrap gap-6 w-full relative">
+
       <img className={"rounded-sm h-36"} src={course.image} alt=""/>
       <div className="flex-1">
         <div className="flex justify-between items-center">
@@ -134,5 +137,6 @@ export default function CourseComponent({course}: CourseComponentProps) {
         </div>
       </div>
     </Card>
+    </Link>
   );
 }
