@@ -39,7 +39,7 @@ const CreateSectionForm = ({course}: Props) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger className={'rounded-sm bg-white shadow-sm px-1'}>
           <PlusIcon/>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

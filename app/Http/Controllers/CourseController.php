@@ -49,6 +49,7 @@ class CourseController extends Controller
       'title' => 'required|string',
       'description' => 'required|string',
       'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+      'order' => 'required|integer',
     ]);
 
 
@@ -82,7 +83,7 @@ class CourseController extends Controller
         'title' => $validated['title'],
         'description' => $validated['description'],
         'image' => $fileUrl,
-        //TODO: add order
+        'order' => $validated['order'],
       ]);
     } else {
        Course::create($validated);
