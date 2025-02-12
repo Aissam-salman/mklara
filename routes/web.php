@@ -29,7 +29,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('courses', CourseController::class)
-  ->only(['index', 'show', 'store', 'create', 'destroy'])
   ->middleware(['auth', 'verified']);
 
 Route::post('courses/{course}', [CourseController::class, 'update'])
