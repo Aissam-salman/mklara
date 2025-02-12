@@ -36,7 +36,7 @@ class CoursePolicy
      */
     public function update(User $user, Course $course): bool
     {
-      return $user->getAttribute('role') === 'admin';
+      return $user->role === 'admin';
     }
 
     /**

@@ -99,7 +99,8 @@ class CourseController extends Controller
    */
   public function show(Course $course)
   {
-    //
+    $course->load('sections.chapters.exercises');
+    return Inertia::render('Courses/Show', ['course' => $course]);
   }
 
   /**
@@ -205,7 +206,6 @@ class CourseController extends Controller
 
         $dataToUpdate['image'] = $fileUrl;
       } catch (\Exception $e) {
-        dd($e->getMessage());
         return redirect()
           ->route('courses.index')
           ->with('error', 'Erreur lors de l\'upload de l\'image: ' . $e->getMessage());
@@ -229,8 +229,10 @@ class CourseController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Course $course)
+  public function destroy(Course $course): RedirectResponse
   {
-    //
+    Gate::authorize('delete', $course);
+    $course->delete();
+    return redirect()->route('courses.index');
   }
 }

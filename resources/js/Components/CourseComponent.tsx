@@ -1,7 +1,13 @@
 import {Course} from "@/types";
 import {Card} from "./ui/card";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/Components/ui/dropdown-menu";
-import {useForm} from "@inertiajs/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/Components/ui/dropdown-menu";
+import {router, useForm, usePage} from "@inertiajs/react";
 import * as React from "react";
 import {FormEventHandler, useState} from "react";
 import InputError from "@/Components/InputError";
@@ -14,6 +20,9 @@ interface CourseComponentProps {
 }
 
 export default function CourseComponent({course}: CourseComponentProps) {
+
+  const user = usePage().props.auth.user;
+
   const [previewImage, setPreviewImage] = useState<string>(course.image)
   const {data, setData, post, clearErrors, reset, errors} = useForm({
     title: course.title,
@@ -48,6 +57,10 @@ export default function CourseComponent({course}: CourseComponentProps) {
     }
   }
 
+  const handleDelete = () => {
+    router.delete(route('courses.destroy', course.id));
+  }
+
   return (
     <Card className="p-6 flex flex-wrap gap-6 w-full relative">
       <img className={"rounded-sm h-36"} src={course.image} alt=""/>
@@ -65,8 +78,12 @@ export default function CourseComponent({course}: CourseComponentProps) {
               <Ellipsis />
             </DropdownMenuTrigger>
             <DropdownMenuContent side={"left"} >
-              <DropdownMenuItem onClick={() => setIsOpen(true)}>
+              <DropdownMenuItem className={"cursor-pointer"} onClick={() => setIsOpen(true)}>
                 Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator/>
+              <DropdownMenuItem className={"text-red-300 cursor-pointer bg-red-50 "} onClick={handleDelete}>
+                Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
