@@ -3,7 +3,6 @@ import Authenticated from "@/Layouts/AuthenticatedLayout";
 import {Head} from "@inertiajs/react";
 import CreateSectionForm from "@/Pages/Courses/Partials/CreateSectionForm";
 import SectionComponent from "@/Components/SectionComponent";
-import {log} from "node:util";
 
 interface PageProps {
   course: Course;

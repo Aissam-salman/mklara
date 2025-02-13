@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-
+use Inertia\Response;
 
 class ChapterController extends Controller
 {
@@ -55,24 +55,40 @@ class ChapterController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(Chapter $chapter)
+  public function edit(Chapter $chapter): Response
   {
-    //
+    Gate::authorize('update', $chapter);
+
+    return Inertia::render('Courses/Sections/Chapters/Edit', [
+      'chapter' => $chapter,
+    ]);
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Chapter $chapter)
+  public function update(Request $request, Chapter $chapter): RedirectResponse
   {
-    //
+    $validated = $request->validate([
+      'title' => 'required|string|max:255',
+      'content' => 'required|string',
+      'order' => 'required|integer|min:1',
+    ]);
+
+    $chapter->update($validated);
+
+    return redirect()->route('sections.show', $chapter->section_id);
   }
 
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Chapter $chapter)
+  public function destroy(Chapter $chapter): RedirectResponse
   {
-    //
+    Gate::authorize('delete', $chapter);
+
+    $chapter->delete();
+
+    return redirect()->route('sections.show', $chapter->section_id);
   }
 }

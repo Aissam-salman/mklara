@@ -1,16 +1,14 @@
-import { Button } from "@/Components/ui/button.js";
-import { Chapter, Section } from "@/types/index.js";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.js";
+import { Button } from "@/Components/ui/button";
+import { Chapter, Section } from "@/types";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import { Dialog, DialogContent,  DialogHeader, DialogTitle } from "@/Components/ui/dialog";
 import { Input } from "@/Components/ui/input";
 import { Textarea } from "@/Components/ui/textarea";
 import { useForm } from "@inertiajs/react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import InputError from "@/Components/InputError.js";
+import InputError from "@/Components/InputError";
 import {
     Pagination,
     PaginationContent,
@@ -21,6 +19,14 @@ import {
     PaginationEllipsis,
 } from '@/Components/ui/pagination';
 import { ChapterComponent } from "@/Components/ChapterComponant";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/Components/ui/dropdown-menu";
+import { MoreVertical, Pencil, Trash} from "lucide-react";
+import { router } from "@inertiajs/react";
 
 interface IndexProps {
     section: Section;
@@ -39,8 +45,23 @@ const Index = ({ section, chapters }: IndexProps) => {
         title: "",
         content: "",
         section_id: section.id,
-        order: section.chapters.length + 1,
+        order: (chapters.data.length + 1),
     });
+
+    const { delete: destroy } = useForm();
+
+    const handleDelete = (chapterId: number) => {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce chapitre ?')) {
+            destroy(route('chapters.destroy', chapterId), {
+                onSuccess: () => {
+                    // Le chapitre sera automatiquement retiré grâce à la mise à jour Inertia
+                },
+                onError: (errors) => {
+                    console.log(errors);
+                }
+            });
+        }
+    };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,6 +76,7 @@ const Index = ({ section, chapters }: IndexProps) => {
             }
         });
     };
+
 
     const renderPaginationItems = () => {
         const items = [];
@@ -139,7 +161,6 @@ const Index = ({ section, chapters }: IndexProps) => {
                     <h1 className="text-2xl font-bold"><span>{section.order}</span> {section.title}</h1>
                     <Button onClick={() => setIsOpen(true)}>
                         <Plus />
-                        Ajouter un chapitre
                     </Button>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -147,15 +168,26 @@ const Index = ({ section, chapters }: IndexProps) => {
                         <>
                             {chapters.data.map((chapter, index) => (
                                 <div key={chapter.id}>
-                                    <ChapterComponent chapter={chapter} />
-                                    {index === chapters.data.length - 1 && (
-                                        <Button
-                                            className="mt-4"
-                                            onClick={() => { }}
-                                        >
-                                            Accéder aux exercices
-                                        </Button>
-                                    )}
+                                    <div className="flex items-center justify-between gap-2">
+                                        <ChapterComponent chapter={chapter} />
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => router.visit(route('chapters.edit', chapter.id))}>
+                                                    <Pencil className="mr-2 h-4 w-4" />
+                                                    Modifier
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleDelete(chapter.id)}>
+                                                    <Trash className="mr-2 h-4 w-4" />
+                                                    Supprimer
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </div>
                             ))}
 

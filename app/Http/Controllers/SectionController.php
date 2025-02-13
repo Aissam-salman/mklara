@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Section;
+use App\Models\Chapter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -46,12 +47,12 @@ class SectionController extends Controller
    * Display the specified resource.
    */
   public function show(Section $section)
-
   {
-    $section->load('chapters.exercises');
     return Inertia::render('Courses/Sections/Index', [
-      'section' => $section,
-      'chapters' => $section->chapters()->paginate(1),
+      'section' => $section->load('course'),
+      'chapters' => Chapter::where('section_id', $section->id)
+        ->orderBy('order', 'asc')
+        ->paginate(1)
     ]);
   }
 

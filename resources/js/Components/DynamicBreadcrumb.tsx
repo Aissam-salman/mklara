@@ -1,24 +1,48 @@
-import {usePage} from "@inertiajs/react";
-import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList} from "@/Components/ui/breadcrumb";
+import { usePage } from "@inertiajs/react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/Components/ui/breadcrumb";
+import { PageProps as InertiaPageProps } from "@inertiajs/core";
+import { Fragment } from "react";
+
+interface Section {
+  title: string;
+}
+
+interface PageProps extends InertiaPageProps {
+  section?: Section;
+}
 
 const DynamicBreadcrumb = () => {
-  const {url} = usePage();
+  const { url, props } = usePage<PageProps>();
+  const { section } = props;
 
-  const segments = url.split("/").filter(Boolean);
+  const segments = url.split("?")[0].split("/").filter(Boolean);
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {segments.map((segment, index) => {
           const href = "/" + segments.slice(0, index + 1).join("/");
-          const formattedSegment = segment.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+          let displayText = segment
+            .split("?")[0]
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, c => c.toUpperCase());
+
+          // Si le segment est un ID de section et que nous avons les données de la section
+          if (segments[index - 1] === "sections" && section?.title) {
+            displayText = section.title;
+          }
 
           return (
-            <BreadcrumbItem key={index}>
-              <BreadcrumbLink href={href}>
-                {formattedSegment}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
+            <Fragment key={index}>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={href}>
+                  {displayText}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {index < segments.length - 1 && (
+                <BreadcrumbSeparator />
+              )}
+            </Fragment>
           )
         })}
       </BreadcrumbList>

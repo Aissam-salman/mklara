@@ -40,8 +40,6 @@ Route::resource('sections', SectionController::class)
   ->only(['store', 'update', 'destroy', 'show'])
   ->middleware(['auth', 'verified']);
 
-Route::resource('chapters', ChapterController::class)
-  ->only(['store', 'update', 'destroy', 'show'])
-  ->middleware(['auth', 'verified']);
+Route::resource('chapters', ChapterController::class)->middleware(['auth']);
 
 require __DIR__ . '/auth.php';

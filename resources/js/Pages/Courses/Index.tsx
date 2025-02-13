@@ -1,16 +1,9 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import {Head} from "@inertiajs/react";
-import * as React from "react";
 import {Course} from "@/types";
 import CourseComponent from "@/Components/CourseComponent";
 
-interface FormData {
-  title: string;
-  description: string;
-  image: File | string | null;
-  order: string;
-  [key: string]: any;
-}
+
 interface CourseData {
   courses: Course[];
 }
