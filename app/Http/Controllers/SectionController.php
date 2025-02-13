@@ -40,7 +40,7 @@ class SectionController extends Controller
 
     Section::create($validated);
 
-    return redirect()->route('courses.show', $validated['course_id']);
+    return redirect()->route('courses.show', $validated['course_id'])->with('success', 'Section créée avec succès');
   }
 
   /**
@@ -88,7 +88,7 @@ class SectionController extends Controller
     if (count($dataToUpdate) > 0) {
       $section->update($dataToUpdate);
     }
-    return redirect()->route('courses.show', $section->course_id);
+    return redirect()->route('courses.show', $section->course_id)->with('success', 'Section modifiée avec succès');
   }
 
   /**
@@ -100,6 +100,6 @@ class SectionController extends Controller
 
     $section->delete();
 
-    return redirect()->route('courses.show', $section->course_id);
+    return redirect()->route('courses.show', $section->course_id)->with('success', 'Section supprimée avec succès');
   }
 }

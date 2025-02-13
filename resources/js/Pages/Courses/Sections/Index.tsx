@@ -38,14 +38,14 @@ interface IndexProps {
     };
 }
 
-const Index = ({ section, chapters }: IndexProps) => {
+export default function Index({ section, chapters }: IndexProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         title: "",
         content: "",
         section_id: section.id,
-        order: (chapters.data.length + 1),
+        order: 1,
     });
 
     const { delete: destroy } = useForm();
@@ -207,7 +207,14 @@ const Index = ({ section, chapters }: IndexProps) => {
                     <DialogHeader>
                         <DialogTitle>Ajouter un chapitre</DialogTitle>
                     </DialogHeader>
-                        <form onSubmit={submit} className="space-y-4">
+                    <form onSubmit={submit} className="space-y-4">
+                        <Input
+                            type="number"
+                            placeholder="Ordre du chapitre"
+                            value={data.order}
+                            onChange={(e) => setData("order", +e.target.value)}
+                        />
+                        <InputError message={errors.order} />
                             <Input
                                 type="text"
                                 placeholder="Titre du chapitre"
@@ -230,5 +237,3 @@ const Index = ({ section, chapters }: IndexProps) => {
         </AuthenticatedLayout>
     );
 }
-
-export default Index;
