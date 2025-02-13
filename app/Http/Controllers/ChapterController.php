@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+
 
 class ChapterController extends Controller
 {
@@ -20,15 +24,24 @@ class ChapterController extends Controller
    */
   public function create()
   {
-    //
+
   }
 
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(Request $request): RedirectResponse
   {
-    //
+    $validated = $request->validate([
+      'title' => 'required|string',
+      'content' => 'required|string',
+      'section_id' => 'required|exists:sections,id',
+      'order' => 'required|integer',
+    ]);
+
+    Chapter::create($validated);
+
+    return redirect()->route('sections.show', $validated['section_id']);
   }
 
   /**

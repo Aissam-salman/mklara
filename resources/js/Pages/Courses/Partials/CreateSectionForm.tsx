@@ -32,7 +32,12 @@ const CreateSectionForm = ({course}: Props) => {
   const submit: FormEventHandler = (e) => {
     e.preventDefault();
     console.log("submit", data);
-    post(route('sections.store'), {onSuccess: () => reset()});
+    post(route('sections.store'), {
+      onSuccess: () => {
+        reset();
+        setIsOpen(false);
+      }
+    });
   };
 
 

@@ -2,6 +2,8 @@ import {Course} from "@/types";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import {Head} from "@inertiajs/react";
 import CreateSectionForm from "@/Pages/Courses/Partials/CreateSectionForm";
+import SectionComponent from "@/Components/SectionComponent";
+import {log} from "node:util";
 
 interface PageProps {
   course: Course;
@@ -21,17 +23,15 @@ const Show = ({course}: PageProps) => {
               <h2 className={'text-3xl font-semibold'}>Les sections</h2>
               <CreateSectionForm course={course}/>
             </div>
+            <div className="flex gap-2 flex-col">
             {course.sections.map((section) => (
-              <div key={section.id} className="mb-6">
-                <h2 className="text-xl font-semibold">{section.title}</h2>
-              </div>
+              <SectionComponent section={section} key={section.id} />
             ))}
+            </div>
           </div>
         ) : (
           <p className="text-gray-500 mt-4">Aucune section disponible.</p>
         )}
-        <div className={""}>
-        </div>
       </div>
     </Authenticated>
   );

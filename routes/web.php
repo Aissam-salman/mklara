@@ -4,6 +4,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\ChapterController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,7 +37,11 @@ Route::post('courses/{course}', [CourseController::class, 'update'])
   ->middleware(['auth', 'verified']);
 
 Route::resource('sections', SectionController::class)
-  ->only(['store'])
+  ->only(['store', 'update', 'destroy', 'show'])
+  ->middleware(['auth', 'verified']);
+
+Route::resource('chapters', ChapterController::class)
+  ->only(['store', 'update', 'destroy', 'show'])
   ->middleware(['auth', 'verified']);
 
 require __DIR__ . '/auth.php';

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Section;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+
 
 class SectionController extends Controller
 {
@@ -43,8 +46,13 @@ class SectionController extends Controller
    * Display the specified resource.
    */
   public function show(Section $section)
+
   {
-    //
+    $section->load('chapters.exercises');
+    return Inertia::render('Courses/Sections/Index', [
+      'section' => $section,
+      'chapters' => $section->chapters()->paginate(1),
+    ]);
   }
 
   /**
@@ -58,9 +66,28 @@ class SectionController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Section $section)
+  public function update(Request $request, Section $section): RedirectResponse
   {
-    //
+    Gate::authorize('update', $section);
+
+    $validated = $request->validate([
+      'title' => 'required|string',
+      'order' => 'required|integer',
+    ]);
+
+    $dataToUpdate = [];
+
+    if ($request->has('title') && $request->title !== $section->title) {
+      $dataToUpdate['title'] = $validated['title'];
+    }
+    if ($request->has('order') && (int)$request->order !== $section->order) {
+      $dataToUpdate['order'] = $validated['order'];
+    }
+
+    if (count($dataToUpdate) > 0) {
+      $section->update($dataToUpdate);
+    }
+    return redirect()->route('courses.show', $section->course_id);
   }
 
   /**
@@ -68,6 +95,10 @@ class SectionController extends Controller
    */
   public function destroy(Section $section)
   {
-    //
+    Gate::authorize('delete', $section);
+
+    $section->delete();
+
+    return redirect()->route('courses.show', $section->course_id);
   }
 }
