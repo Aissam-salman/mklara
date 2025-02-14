@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,6 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_photo_path',
+        'role',
+        //TODO: add status
     ];
 
     /**
@@ -45,5 +50,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function conversations(): BelongsToMany
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_user');
+    }
+
+    public function message(): HasOne
+    {
+        return $this->hasOne(Message::class, 'sender_id');
+    }
+
+    public function groupMembers(): HasMany
+    {
+        return $this->hasMany(GroupMember::class);
+    }
+
+    public function groupMessages(): HasMany
+    {
+        return $this->hasMany(GroupMessage::class);
+    }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(Reaction::class);
     }
 }

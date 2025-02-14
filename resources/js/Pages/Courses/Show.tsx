@@ -12,7 +12,7 @@ const Show = ({course}: PageProps) => {
   return (
     <Authenticated>
       <Head title={course.title}/>
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-4 bg-white rounded-sm">
         <img src={course.image} alt="" hidden={!course.image} className={"w-full object-cover h-52 mb-3"}/>
         <h1 className="text-4xl font-bold">{course.title}</h1>
         <p className="text-gray-700">{course.description}</p>

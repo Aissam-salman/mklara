@@ -66,7 +66,7 @@ export default function CourseComponent({course}: CourseComponentProps) {
     ? course.description.slice(0, 100) + "..."
     : course.description;
   return (
-    <Card className="p-6 flex flex-wrap gap-6 w-full relative max-w-3xl">
+    <Card className="p-6 bg-white flex flex-wrap gap-6 w-full relative max-w-3xl">
       <div>
         <Link href={route('courses.show', course.id)} className="flex flex-wrap sm:flex-nowrap gap-6 cursor-pointer">
           <img className="rounded-sm h-36" src={course.image} alt=""/>
