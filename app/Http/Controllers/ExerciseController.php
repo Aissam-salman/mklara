@@ -3,16 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Exercise;
+use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ExerciseController extends Controller
 {
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request): Response
   {
-    //
+    $exercises = Exercise::where('chapter_id', $request->chapter_id)
+      ->paginate(1);
+
+    return Inertia::render('Courses/Sections/Chapters/Exercises/Index', [
+      'chapter_id' => $request->chapter_id,
+      'exercises' => $exercises
+    ]);
   }
 
   /**
@@ -26,9 +36,17 @@ class ExerciseController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(Request $request): RedirectResponse
   {
-    //
+    $validated = $request->validate([
+      'question' => 'required|string',
+      'answer' => 'required|string',
+      'chapter_id' => 'required|exists:chapters,id'
+    ]);
+
+    Exercise::create($validated);
+
+    return redirect()->back();
   }
 
   /**
@@ -36,7 +54,9 @@ class ExerciseController extends Controller
    */
   public function show(Exercise $exercise)
   {
-    //
+    return Inertia::render('Courses/Sections/Chapters/Exercises/Show', [
+        'exercise' => $exercise,
+    ]);
   }
 
   /**
@@ -44,7 +64,9 @@ class ExerciseController extends Controller
    */
   public function edit(Exercise $exercise)
   {
-    //
+     return Inertia::render('Courses/Sections/Chapters/Exercises/Edit', [
+      'exercise' => $exercise,
+    ]);
   }
 
   /**
@@ -52,14 +74,20 @@ class ExerciseController extends Controller
    */
   public function update(Request $request, Exercise $exercise)
   {
-    //
+    $validated = $request->validate([
+      'question' => 'string',
+      'answer' => 'string',
+    ]);
+    $exercise->update($validated);
+    return redirect()->back()->with('success', 'Exercice mis à jour avec succès !');
   }
 
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Exercise $exercise)
+  public function destroy(Exercise $exercise): RedirectResponse
   {
-    //
+    $exercise->delete();
+    return redirect()->back();
   }
 }

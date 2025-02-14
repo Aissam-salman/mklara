@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ExerciseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,9 +38,16 @@ Route::post('courses/{course}', [CourseController::class, 'update'])
   ->middleware(['auth', 'verified']);
 
 Route::resource('sections', SectionController::class)
-  ->only(['store', 'update', 'destroy', 'show'])
+  ->only(['store', 'update', 'destroy', 'show', 'index'])
+  ->middleware(['auth', 'verified']);
+
+Route::get('/courses/{course}/sections', [SectionController::class, 'index'])
+  ->name('sections.index')
   ->middleware(['auth', 'verified']);
 
 Route::resource('chapters', ChapterController::class)->middleware(['auth']);
+
+Route::resource('exercises', ExerciseController::class)->middleware(['auth']);
+
 
 require __DIR__ . '/auth.php';

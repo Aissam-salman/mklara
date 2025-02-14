@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Section;
 use App\Models\Chapter;
+use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -15,8 +16,17 @@ class SectionController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request, Course $course)
   {
+    // Charger les sections du cours spécifié, triées par ordre
+    $sections = $course->sections()
+      ->orderBy('order', 'asc')
+      ->paginate(10);
+
+    return Inertia::render('Courses/Sections/Index', [
+      'course' => $course,
+      'sections' => $sections
+    ]);
   }
 
   /**
