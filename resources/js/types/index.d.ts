@@ -1,11 +1,11 @@
-import {Config} from 'ziggy-js';
+import { Config } from 'ziggy-js';
 
 export interface User {
-    id: number;
-    name: string;
-    email: string;
-    email_verified_at?: string;
-    profile_photo_path?: string;
+  id: number;
+  name: string;
+  email: string;
+  email_verified_at?: string;
+  profile_photo_path?: string;
   role?: Role;
 }
 
@@ -47,10 +47,42 @@ export interface Course {
 }
 
 export type PageProps<
-    T extends Record<string, unknown> = Record<string, unknown>,
+  T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
-    auth: {
-        user: User;
-    };
-    ziggy: Config & { location: string };
+  auth: {
+    user: User;
+  };
+  ziggy: Config & { location: string };
 };
+
+export interface Group {
+  id: number;
+  name: string;
+  description: string;
+  photo_url: string;
+  messages?: Message[];
+  members: GroupMember[]
+}
+
+export interface GroupMember {
+  id: number;
+  group_id: number;
+  user_id: number;
+  role: string;
+  joined_at: string;
+  user?: User;
+}
+
+export interface Message {
+  id: number;
+  conversation: Conversation;
+  user: User;
+  content: string;
+  deleted_at?: Date | string;
+  status?: string;
+  created_at?: Date | string;
+}
+
+export interface Conversation {
+  id: number;
+}

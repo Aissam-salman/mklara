@@ -28,7 +28,18 @@ class GroupMemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'group_id' => 'required|exists:groups,id',
+        ]);
+
+        GroupMember::create([
+            'group_id' => $validated['group_id'],
+            'user_id' => auth()->id(),
+            'joined_at' => now(),
+            'role' => 'member'
+        ]);
+
+        return redirect()->back()->with('success', 'Vous avez rejoint le groupe avec succès');
     }
 
     /**

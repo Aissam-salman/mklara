@@ -22,16 +22,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
         items: [
           //TODO: get list of group with title & email
           {
-            title: "History",
-            url: "#",
-          },
-          {
-            title: "Starred",
-            url: "#",
-          },
-          {
-            title: "Settings",
-            url: "#",
+            title: "Liste des groupes",
+            url: route('groups.index'),
           },
         ],
       },

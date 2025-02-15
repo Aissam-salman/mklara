@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\GroupMemberController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -46,8 +48,16 @@ Route::get('/courses/{course}/sections', [SectionController::class, 'index'])
   ->middleware(['auth', 'verified']);
 
 Route::resource('chapters', ChapterController::class)->middleware(['auth']);
-
 Route::resource('exercises', ExerciseController::class)->middleware(['auth']);
 
+
+Route::resource('groups', GroupController::class)->middleware(['auth']);
+Route::post('groups/{group}', [GroupController::class, 'update'])
+  ->name('groups.update')
+  ->middleware(['auth', 'verified']);
+
+Route::post('/group-members', [GroupMemberController::class, 'store'])
+    ->name('group-members.store')
+    ->middleware('auth');
 
 require __DIR__ . '/auth.php';
