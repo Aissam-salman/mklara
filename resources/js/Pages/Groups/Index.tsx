@@ -24,7 +24,7 @@ const Index = ({ groups }: GroupsPageProps) => {
 
     const { delete: destroy } = useForm();
 
-    const { post, setData } = useForm({
+    const {data, post, setData } = useForm({
         group_id: 1,
     });
 
@@ -58,7 +58,7 @@ const Index = ({ groups }: GroupsPageProps) => {
         post(route('group-members.store'), {
             onSuccess: () => {
                 setIsJoinDialogOpen(false);
-                router.visit(route('groups.show', selectedGroup as number));
+                router.visit(route('groups.show', data.group_id as number));
             },
             onError: (err) => {
                 console.error('error from laravel:', err)

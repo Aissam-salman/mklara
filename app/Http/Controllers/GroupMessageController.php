@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GroupMessageSent;
+use App\Models\Group;
 use App\Models\GroupMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class GroupMessageController extends Controller
 {
@@ -26,9 +29,20 @@ class GroupMessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Group $group)
     {
-        //
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $message = $group->messages()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+        ]);
+
+        broadcast(new GroupMessageSent($message))->toOthers();
+
+        return redirect()->back()->with('success', 'message created');
     }
 
     /**
@@ -52,7 +66,16 @@ class GroupMessageController extends Controller
      */
     public function update(Request $request, GroupMessage $groupMessage)
     {
-        //
+        $validated = $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        try {
+            $groupMessage->update($validated);
+            return redirect()->back()->with('success', 'Message updated!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -60,6 +83,9 @@ class GroupMessageController extends Controller
      */
     public function destroy(GroupMessage $groupMessage)
     {
-        //
+        Gate::authorize('delete', $groupMessage);
+
+        $groupMessage->delete();
+        return redirect()->back()->with('success', 'Message supprimé avec succès');
     }
 }

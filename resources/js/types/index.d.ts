@@ -78,9 +78,9 @@ export interface Message {
   conversation: Conversation;
   user: User;
   content: string;
-  deleted_at?: Date | string;
+  deleted_at?: string;
   status?: string;
-  created_at?: Date | string;
+  created_at?: string;
 }
 
 export interface Conversation {
