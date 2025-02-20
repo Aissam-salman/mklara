@@ -80,7 +80,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator/>
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.visit(route('select'))}>
                 <Sparkles/>
                 Upgrade to Pro
               </DropdownMenuItem>
@@ -91,7 +91,7 @@ export function NavUser() {
                 <AvatarIcon/>
                 Mon profil
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.visit(route('billing'))}>
                 <CreditCard/>
                 Billing
               </DropdownMenuItem>

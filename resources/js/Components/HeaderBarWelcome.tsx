@@ -3,7 +3,8 @@ import {Link} from "@inertiajs/react";
 import {PageProps, User} from "@/types";
 import {useIsMobile} from "@/hooks/use-mobile";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/Components/ui/dropdown-menu";
-import {MenuIcon} from "lucide-react";
+import { MenuIcon } from "lucide-react";
+
 interface HeaderBarProps {
     auth: {
         user?: User | null;
@@ -23,7 +24,6 @@ const HeaderBarWelcome = ({auth}: HeaderBarProps) => {
                     <DropdownMenu>
                         <DropdownMenuTrigger> <MenuIcon/></DropdownMenuTrigger>
                         <DropdownMenuContent>
-
                             {auth.user ? (
                                 <>
                                     <DropdownMenuItem>
@@ -42,7 +42,7 @@ const HeaderBarWelcome = ({auth}: HeaderBarProps) => {
                                             href={route('login')}
                                             className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                         >
-                                            Log in
+                                            Connexion
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
@@ -50,7 +50,7 @@ const HeaderBarWelcome = ({auth}: HeaderBarProps) => {
                                             href={route('register')}
                                             className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                         >
-                                            Register
+                                            S'inscrire
                                         </Link>
                                     </DropdownMenuItem>
                                 </>
@@ -72,13 +72,13 @@ const HeaderBarWelcome = ({auth}: HeaderBarProps) => {
                                     href={route('login')}
                                     className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
-                                    Log in
+                                    Connexion
                                 </Link>
                                 <Link
                                     href={route('register')}
                                     className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
-                                    Register
+                                    S'inscrire
                                 </Link>
                             </>
                         )}

@@ -1,29 +1,10 @@
-import { useForm } from "@inertiajs/react";
 import {useState} from "react";
 
-const Pricing = () => {
+const PricingDemo = () => {
     const [isChecked, setIsChecked] = useState(true);
-
 
     const toggleSwitch = () => {
         setIsChecked((prev) => !prev);
-    };
-
-    const { data, post, setData } = useForm({
-        plan: '',
-    });
-
-    const handlePlanSelected = async (planValue: string) => {
-        setData('plan', planValue);
-        try {
-            await post(route('subscribe'), {
-                onError: (err) => {
-                    console.error(err);
-                }
-            });
-        } catch (error) {
-            console.error('Erreur lors de la sélection du plan:', error);
-        }
     };
 
     return (
@@ -197,13 +178,6 @@ const Pricing = () => {
                                         </span>
                             </li>
                         </ul>
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
-                              onClick={() => handlePlanSelected(isChecked ? "premium_yearly" : "premium_monthly")}
-                        >
-                            <span className="absolute right-0 -mt-12 h-32 w-8 translate-x-12 rotate-12 transform-gpu bg-white opacity-10 transition-all duration-1000 ease-out group-hover:-translate-x-96 dark:bg-black">
-                            </span>
-                            <p>Choisir Premium</p>
-                        </button>
                     </div>
                     <div
                         className="relative flex max-w-[400px] flex-col gap-8 rounded-2xl border p-4 text-black dark:text-white overflow-hidden">
@@ -348,13 +322,6 @@ const Pricing = () => {
                                         </span>
                             </li>
                         </ul>
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
-                        onClick={() => handlePlanSelected(isChecked ? "ultimate_yearly" : "ultimate_monthly")}
-                        >
-                            <span className="absolute right-0 -mt-12 h-32 w-8 translate-x-12 rotate-12 transform-gpu bg-white opacity-10 transition-all duration-1000 ease-out group-hover:-translate-x-96 dark:bg-black">
-                            </span>
-                            <p>Choisir Ultimate</p>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -363,4 +330,4 @@ const Pricing = () => {
     )
 }
 
-export default Pricing;
+export default PricingDemo;

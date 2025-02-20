@@ -18,7 +18,9 @@ export default function Authenticated({children}: PropsWithChildren<{ header?: R
             <SidebarTrigger className="-ml-1"/>
             <Separator orientation="vertical" className="mr-2 h-4"/>
           </div>
-          <Button className="ml-auto mr-2" variant="ghost" size="icon" onClick={() => window.history.back()}>
+          <Button
+            className="ml-auto mr-2" variant="ghost" size="icon"
+            onClick={() => window.history.back()}>
             <ArrowLeft />
           </Button>
         </header>
@@ -27,6 +29,5 @@ export default function Authenticated({children}: PropsWithChildren<{ header?: R
         </main>
       </SidebarInset>
     </SidebarProvider>
-
   );
 }

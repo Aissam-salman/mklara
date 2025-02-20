@@ -9,6 +9,8 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\GroupMemberController;
+use App\Http\Controllers\SubscriptionController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,5 +73,11 @@ Route::middleware(['auth'])->group(function () {
 
   Route::delete('/group-messages/{group_message}', [GroupMessageController::class, 'destroy'])->name('group-messages.destroy');
 });
+
+
+Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('subscribe');
+
+Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
+
 
 require __DIR__ . '/auth.php';

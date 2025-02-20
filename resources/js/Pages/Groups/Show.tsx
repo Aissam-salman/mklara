@@ -16,7 +16,7 @@ interface ShowGroupProps {
     group: Group
 }
 
-const Show = ({ group }: ShowGroupProps) => {
+const Show = ({ group }: ShowGroupProps) => {4
     const [messages, setMessages] = useState(group.messages || []);
     const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
     const [editingContent, setEditingContent] = useState('');

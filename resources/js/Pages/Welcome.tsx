@@ -1,17 +1,21 @@
 import { PageProps } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import HeaderBarWelcome from "@/Components/HeaderBarWelcome";
 import {RainbowButton} from "@/Components/ui/rainbow-button";
 import ShineBorder from "@/Components/ui/shine-border";
 import Safari from "@/Components/ui/safari";
 import {BentoSolved} from "@/Components/BentoSolved";
-import Pricing from "@/Components/pricing";
+import PricingDemo from "@/Components/pricing-demo";
 import {Testimonial} from "@/Components/Testimonial";
 import Footer from "@/Components/Footer";
 
 export default function Welcome({
     auth,
 }: PageProps) {
+
+    const handleSelect = () => {
+        router.visit('register');
+    }
 
 
     return (
@@ -59,7 +63,7 @@ export default function Welcome({
                             <section id="resolving" className={"py-20"}>
                                 <BentoSolved/>
                             </section>
-                            <Pricing/>
+                            <PricingDemo />
                             <section id="testemonial">
                                 <Testimonial/>
                             </section>

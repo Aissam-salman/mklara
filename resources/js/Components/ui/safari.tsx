@@ -130,11 +130,11 @@ export default function Safari({
                 {imageSrc && (
                     <image
                         href={imageSrc}
-                        width="1200"
-                        height="700"
-                        x="1"
+                        width={width}
+                        height={height}
+                        x="0"
                         y="52"
-                        preserveAspectRatio="xMidYMid slice"
+                        preserveAspectRatio="xMinYMid slice"
                         clipPath="url(#roundedBottom)"
                     />
                 )}
