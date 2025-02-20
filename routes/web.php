@@ -10,6 +10,7 @@ use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\GroupMemberController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Middleware\VerifyCsrfToken;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -79,5 +80,7 @@ Route::post('/subscribe', [SubscriptionController::class, 'subscribe'])->name('s
 
 Route::get('/billing', [SubscriptionController::class, 'billing'])->name('billing');
 
+Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handle'])
+  ->name('cashier.webhook');
 
 require __DIR__ . '/auth.php';

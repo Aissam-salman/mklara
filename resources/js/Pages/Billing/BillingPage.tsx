@@ -5,22 +5,21 @@ import Pricing from "@/Components/pricing";
 
 interface BillingProps {
     subscription: any;
-    subscribed: boolean;
+    current_plan: string;
 }
 
-export default function BillingPage({ subscription, subscribed }: BillingProps) {
+export default function BillingPage({ subscription, current_plan }: BillingProps) {
 
-    console.log('subscribed', subscribed);
+    console.log('current_plan', current_plan);
     console.log('subscription', subscription);
 
     return (
         <Authenticated>
             <div className="p-6 mx-auto bg-white rounded-xl shadow-md">
                 <h2 className="text-xl font-bold mb-4">Gestion de l'abonnement</h2>
-                {subscribed ? (
+                {current_plan ? (
                     <div>
-                        <p>Abonnement actif : {subscription.subscription?.stripe_price}</p>
-                        <button className="mt-4 p-2 bg-red-500 text-white rounded" onClick={() => alert("Annulation non implémentée")}>Annuler</button>
+                        <p>Abonnement actif : {current_plan}</p>
                     </div>
                 ) : (
                     <Pricing />

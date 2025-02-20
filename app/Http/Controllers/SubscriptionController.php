@@ -4,17 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SubscriptionController extends Controller
 {
     public function subscribe(Request $request)
     {
-        $user = Auth::user();
+        $validated = $request->validate([
+            'plan' => 'required|string'
+        ]);
 
-        Log::info("Try to create from subscribe method");
-        dd($request->plan);
+        $user = Auth::user();
 
         $plans = [
             'premium_monthly' => env('STRIPE_PREMIUM_MONTHLY'),
@@ -23,31 +23,49 @@ class SubscriptionController extends Controller
             'ultimate_yearly' => env('STRIPE_ULTIMATE_YEARLY'),
         ];
 
-        if (!isset($plans[$request->plan])) {
-            return Inertia::render('Billing/BillingPage', [
-                'error' => 'Plan invalide'
-            ]);
+        // Vérifier si le plan demandé est valide
+        if (!isset($plans[$validated['plan']])) {
+            return redirect()->route('billing')->with('error', 'Plan invalide.');
         }
 
-        // Gestion des paiements uniques pour les plans annuels
-        if (str_contains($request->plan, 'yearly')) {
-            $checkoutUrl = $user->checkout([$plans[$request->plan] => 1], [
-                'success_url' => route('billing'),
-                'cancel_url' => route('billing'),
-            ])->asStripeCheckoutSession()->url;
+        // Vérifier si l'utilisateur a déjà un abonnement actif
+        if ($user->subscribed('default')) {
+            return redirect()->route('billing')->with('error', 'Vous avez déjà un abonnement actif.');
+        }
+
+        try {
+            // Gestion des paiements uniques pour les plans annuels
+            if (str_contains($validated['plan'], 'yearly')) {
+                $checkoutUrl = $user->checkout([$plans[$validated['plan']] => 1], [
+                    'success_url' => route('billing'),
+                    'cancel_url' => route('billing'),
+                    'metadata' => [
+                        'user_id' => $user->id,
+                        'plan_id' => $plans[$validated['plan']]
+                    ]
+                ])->asStripeCheckoutSession()->url;
+
+                return Inertia::location($checkoutUrl);
+            }
+
+            // Gestion des abonnements pour les plans mensuels
+            $checkoutUrl = $user->newSubscription('default', $plans[$validated['plan']])
+                ->checkout([
+                    'success_url' => route('billing'),
+                    'cancel_url' => route('billing'),
+                    'metadata' => [
+                        'user_id' => $user->id,
+                        'plan_id' => $plans[$validated['plan']] 
+                    ]
+                ])->asStripeCheckoutSession()->url;
 
             return Inertia::location($checkoutUrl);
+
+        } catch (\Exception $e) {
+            return redirect()->route('billing')->with('error', 'Une erreur est survenue : ' . $e->getMessage());
         }
-
-        // Gestion des abonnements pour les plans mensuels
-        $checkoutUrl = $user->newSubscription('default', $plans[$request->plan])
-            ->checkout([
-                'success_url' => route('billing'),
-                'cancel_url' => route('billing'),
-            ])->asStripeCheckoutSession()->url;
-
-        return Inertia::location($checkoutUrl);
     }
+
 
     public function billing()
     {
@@ -56,6 +74,7 @@ class SubscriptionController extends Controller
         return Inertia::render('Billing/BillingPage', [
             'subscribed' => $user->subscribed('default'),
             'subscription' => $user->subscription('default'),
+            'current_plan' => $user->current_plan
         ]);
     }
 }

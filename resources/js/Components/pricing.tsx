@@ -1,29 +1,35 @@
 import { useForm } from "@inertiajs/react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const Pricing = () => {
     const [isChecked, setIsChecked] = useState(true);
-
+    const [selectedPlan, setSelectedPlan] = useState<string>('premium_yearly');
 
     const toggleSwitch = () => {
         setIsChecked((prev) => !prev);
+        setSelectedPlan(prevPlan => {
+            if (!prevPlan) return '';
+            return prevPlan.endsWith('_yearly')
+                ? prevPlan.replace('_yearly', '_monthly')
+                : prevPlan.replace('_monthly', '_yearly');
+        });
     };
 
-    const { data, post, setData } = useForm({
-        plan: '',
+    const {post } = useForm({
+        plan: selectedPlan,
     });
 
-    const handlePlanSelected = async (planValue: string) => {
-        setData('plan', planValue);
-        try {
-            await post(route('subscribe'), {
-                onError: (err) => {
-                    console.error(err);
-                }
-            });
-        } catch (error) {
-            console.error('Erreur lors de la sélection du plan:', error);
-        }
+    console.log(selectedPlan)
+
+    const handleSubscription = () => {
+        if (!selectedPlan) return;
+
+        console.log(selectedPlan)
+
+        post(route('subscribe'), {
+            //@ts-ignore
+            plan: selectedPlan
+        });
     };
 
     return (
@@ -113,7 +119,10 @@ const Pricing = () => {
                         </ul>
                     </div>
                     <div
-                        className="relative flex max-w-[400px] flex-col gap-8 rounded-2xl p-4 text-black dark:text-white overflow-hidden border-2 border-[var(--color-one)] dark:border-[var(--color-one)]">
+                        className={`relative flex max-w-[400px] flex-col gap-8 rounded-2xl p-4 text-black dark:text-white overflow-hidden border-2 cursor-pointer transition-all
+                            ${selectedPlan.startsWith('premium') ? 'border-[var(--color-one)]' : 'border-1'}`}
+                        onClick={() => setSelectedPlan(isChecked ? `premium_yearly` : `premium_monthly`)}
+                    >
                         <div className="flex items-center">
                             <div className="ml-4">
                                 <h2 className="text-base font-semibold leading-7">
@@ -197,16 +206,12 @@ const Pricing = () => {
                                         </span>
                             </li>
                         </ul>
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
-                              onClick={() => handlePlanSelected(isChecked ? "premium_yearly" : "premium_monthly")}
-                        >
-                            <span className="absolute right-0 -mt-12 h-32 w-8 translate-x-12 rotate-12 transform-gpu bg-white opacity-10 transition-all duration-1000 ease-out group-hover:-translate-x-96 dark:bg-black">
-                            </span>
-                            <p>Choisir Premium</p>
-                        </button>
                     </div>
                     <div
-                        className="relative flex max-w-[400px] flex-col gap-8 rounded-2xl border p-4 text-black dark:text-white overflow-hidden">
+                        className={`relative flex max-w-[400px] flex-col gap-8 rounded-2xl p-4 text-black dark:text-white overflow-hidden border-2 cursor-pointer transition-all
+                            ${selectedPlan.startsWith('ultimate') ? 'border-[var(--color-one)]' : 'border-1'}`}
+                        onClick={() => setSelectedPlan(isChecked ? `ultimate_yearly` : `ultimate_monthly`)}
+                    >
                         <div className="flex items-center">
                             <div className="ml-4">
                                 <h2 className="text-base font-semibold leading-7">
@@ -348,17 +353,23 @@ const Pricing = () => {
                                         </span>
                             </li>
                         </ul>
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
-                        onClick={() => handlePlanSelected(isChecked ? "ultimate_yearly" : "ultimate_monthly")}
-                        >
-                            <span className="absolute right-0 -mt-12 h-32 w-8 translate-x-12 rotate-12 transform-gpu bg-white opacity-10 transition-all duration-1000 ease-out group-hover:-translate-x-96 dark:bg-black">
-                            </span>
-                            <p>Choisir Ultimate</p>
-                        </button>
                     </div>
                 </div>
             </div>
 
+            <div className="mt-8 text-center">
+                <button
+                    onClick={handleSubscription}
+                    disabled={!selectedPlan}
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
+                >
+                     <span className="absolute right-0 -mt-12 h-32 w-8 translate-x-12 rotate-12 transform-gpu bg-white opacity-10 transition-all duration-1000 ease-out group-hover:-translate-x-96 dark:bg-black">
+                     </span>
+                    <p>
+                    Confirmer l'abonnement
+                    </p>
+                </button>
+            </div>
         </section>
     )
 }
