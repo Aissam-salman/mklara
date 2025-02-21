@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('courses', CourseController::class)
+->only(['index', 'store', 'show', 'destroy'])
   ->middleware(['auth', 'verified']);
 
 Route::post('courses/{course}', [CourseController::class, 'update'])
@@ -44,7 +45,7 @@ Route::post('courses/{course}', [CourseController::class, 'update'])
   ->middleware(['auth', 'verified']);
 
 Route::resource('sections', SectionController::class)
-  ->only(['store', 'update', 'destroy', 'show', 'index'])
+  ->only(['store', 'update', 'destroy', 'show'])
   ->middleware(['auth', 'verified']);
 
 Route::get('/courses/{course}/sections', [SectionController::class, 'index'])
@@ -55,7 +56,9 @@ Route::resource('chapters', ChapterController::class)->middleware(['auth']);
 Route::resource('exercises', ExerciseController::class)->middleware(['auth']);
 
 
-Route::resource('groups', GroupController::class)->middleware(['auth']);
+Route::resource('groups', GroupController::class)
+->only(['index', 'store', 'show', 'destroy'])
+->middleware(['auth']);
 
 Route::post('groups/{group}', [GroupController::class, 'update'])
   ->name('groups.update')
