@@ -1,0 +1,133 @@
+@startuml learning_platform_schema
+
+class Course {
+    +id: UUID
+    +title: string
+    +description: text
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Section {
+    +id: UUID
+    +course_id: UUID
+    +title: string
+    +order: int
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Chapter {
+    +id: UUID
+    +section_id: UUID
+    +title: string
+    +content: text (Markdown)
+    +order: int
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Exercise {
+    +id: UUID
+    +chapter_id: UUID
+    +question: text
+    +answer: text
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class UserProgress {
+    +id: UUID
+    +user_id: UUID
+    +chapter_id: UUID
+    +status: string (in_progress, completed)
+    +last_viewed_at: timestamp
+}
+
+class User {
+    +id: UUID
+    +name: string
+    +email: string
+    +email_verified_at: timestamp
+    -password: string
+    -remember_token: string
+    +created_at: timestamp
+    +updated_at: timestamp
+    +profile_photo_path: string
+    +role: enum(user, admin, premium)
+    +status: enum(en_ligne, hors_ligne)
+}
+
+class Conversation {
+    +id: UUID
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Message {
+    +id: UUID
+    +conversation_id: UUID
+    +sender_id: UUID
+    +content: text
+    +status: string (sent, delivered, read)
+    +deleted_at: timestamp
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Group {
+    +id: UUID
+    +name: string
+    +description: text
+    +photo_url: string
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class GroupMember {
+    +id: UUID
+    +group_id: UUID
+    +user_id: UUID
+    +role: string (member, moderator)
+    +joined_at: timestamp
+}
+
+class GroupMessage {
+    +id: UUID
+    +group_id: UUID
+    +user_id: UUID
+    +content: text
+    +parent_message_id: UUID (nullable, pour les réponses)
+    +created_at: timestamp
+    +updated_at: timestamp
+}
+
+class Reaction {
+    +id: UUID
+    +group_message_id: UUID
+    +user_id: UUID
+    +type: string (like, love, haha, etc.)
+    +created_at: timestamp
+}
+
+
+User "1" --o "many" Conversation : participe
+Conversation "1" --o "many" Message : contient
+Message "1" --o "1" User : envoyé par
+Group "1" --o "many" GroupMember : contient
+User "1" --o "many" GroupMember : appartient à
+GroupMember "many" --o "1" User : membre
+GroupMember "many" --o "1" Group : dans le groupe
+Group "1" --o "many" GroupMessage : contient
+GroupMessage "1" --o "many" Reaction : a des réactions
+GroupMessage "1" --o "many" GroupMessage : répond à (self-reference)
+User "1" --o "many" GroupMessage : poste
+User "1" --o "many" Reaction : réagit
+
+
+Course "1" --o "many" Section : contient
+Section "1" --o "many" Chapter : contient
+Chapter "1" --o "many" Exercise : contient
+Chapter "1" --o "many" UserProgress : suivi
+User "1" --o "many" UserProgress : suit
+@enduml
