@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/Components/ui/card';
 import { Button } from '@/Components/ui/button';
 import { Activity, BookOpen, Users, MessageSquare } from 'lucide-react';
@@ -18,7 +18,7 @@ export default function Dashboard() {
                         <CardDescription>Vos dernières actions sur Minkey</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-gray-600">Vous avez terminé 3 cours cette semaine.</p>
+                        <p className="text-sm text-gray-600">Aucun activité pour le moment.</p>
                     </CardContent>
                 </Card>
 
@@ -31,8 +31,8 @@ export default function Dashboard() {
                         <CardDescription>Continuez votre apprentissage</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-gray-600">2 cours en progression</p>
-                        <Button variant="link" className="p-0 mt-2">
+                        <p className="text-sm text-gray-600">0 cours en progression</p>
+                        <Button variant="link" className="p-0 mt-2" onClick={() => router.visit('courses.index')}>
                             Voir les cours
                         </Button>
                     </CardContent>
@@ -47,8 +47,7 @@ export default function Dashboard() {
                         <CardDescription>Interagissez avec la communauté</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-sm text-gray-600">5 nouveaux messages dans vos groupes</p>
-                        <Button variant="link" className="p-0 mt-2">
+                        <Button variant="link" className="p-0 mt-2" onClick={() => router.visit('groups.index')}>
                             Voir les discussions
                         </Button>
                     </CardContent>
@@ -78,7 +77,6 @@ export default function Dashboard() {
                         <CardDescription>Votre avancement dans les différents cours</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {/* Ici tu pourrais ajouter un graphique de progression */}
                         <div className="aspect-video rounded-xl bg-muted/50 flex items-center justify-center">
                             Graphique de progression
                         </div>
@@ -91,7 +89,6 @@ export default function Dashboard() {
                         <CardDescription>Vos dernières actions sur la plateforme</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        {/* Ici tu pourrais ajouter une liste d'activités */}
                         <div className="aspect-video rounded-xl bg-muted/50 flex items-center justify-center">
                             Liste des activités
                         </div>

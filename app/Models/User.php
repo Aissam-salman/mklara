@@ -27,8 +27,8 @@ class User extends Authenticatable
         'password',
         'profile_photo_path',
         'role',
+        'subscription',
         'current_plan',
-        //TODO: add status
     ];
 
     /**

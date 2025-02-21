@@ -55,7 +55,7 @@ class SubscriptionController extends Controller
                     'cancel_url' => route('billing'),
                     'metadata' => [
                         'user_id' => $user->id,
-                        'plan_id' => $plans[$validated['plan']] 
+                        'plan_id' => $plans[$validated['plan']]
                     ]
                 ])->asStripeCheckoutSession()->url;
 
@@ -72,7 +72,6 @@ class SubscriptionController extends Controller
         $user = Auth::user();
 
         return Inertia::render('Billing/BillingPage', [
-            'subscribed' => $user->subscribed('default'),
             'subscription' => $user->subscription('default'),
             'current_plan' => $user->current_plan
         ]);
